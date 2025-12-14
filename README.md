@@ -22,8 +22,51 @@ SantaBot is a festive, kid-friendly tabletop game where children “command Sant
 
 **Project media**
 
+**Robot data collection views (4x3 grid: Front / Side / Top)**
+
+<table>
+<tr>
+<td><strong>Front View</strong></td>
+<td><strong>Front View</strong></td>
+<td><strong>Front View</strong></td>
+<td><strong>Front View</strong></td>
+</tr>
+<tr>
+<td><video width="200" height="150" controls><source src="assets/clips/front/episode_000.mp4" type="video/mp4"></video></td>
+<td><video width="200" height="150" controls><source src="assets/clips/front/episode_001.mp4" type="video/mp4"></video></td>
+<td><video width="200" height="150" controls><source src="assets/clips/front/episode_002.mp4" type="video/mp4"></video></td>
+<td><video width="200" height="150" controls><source src="assets/clips/front/episode_003.mp4" type="video/mp4"></video></td>
+</tr>
+<tr>
+<td><strong>Side View</strong></td>
+<td><strong>Side View</strong></td>
+<td><strong>Side View</strong></td>
+<td><strong>Side View</strong></td>
+</tr>
+<tr>
+<td><video width="200" height="150" controls><source src="assets/clips/side/episode_000.mp4" type="video/mp4"></video></td>
+<td><video width="200" height="150" controls><source src="assets/clips/side/episode_001.mp4" type="video/mp4"></video></td>
+<td><video width="200" height="150" controls><source src="assets/clips/side/episode_002.mp4" type="video/mp4"></video></td>
+<td><video width="200" height="150" controls><source src="assets/clips/side/episode_003.mp4" type="video/mp4"></video></td>
+</tr>
+<tr>
+<td><strong>Top View</strong></td>
+<td><strong>Top View</strong></td>
+<td><strong>Top View</strong></td>
+<td><strong>Top View</strong></td>
+</tr>
+<tr>
+<td><video width="200" height="150" controls><source src="assets/clips/top/episode_000.mp4" type="video/mp4"></video></td>
+<td><video width="200" height="150" controls><source src="assets/clips/top/episode_001.mp4" type="video/mp4"></video></td>
+<td><video width="200" height="150" controls><source src="assets/clips/top/episode_002.mp4" type="video/mp4"></video></td>
+<td><video width="200" height="150" controls><source src="assets/clips/top/episode_003.mp4" type="video/mp4"></video></td>
+</tr>
+</table>
+
 ![SantaBot arena - full table view](assets/IMG_8989.jpg)  
 ![Ideal setup](assets/IMG_8987.jpg)
+
+
 
 ---
 
