@@ -8,23 +8,11 @@
 **Summary:**  
 We built a festive, kid-friendly tabletop game where children “command Santa’s robot” to pick the right colored gift from a central pile and drop it into the correct destination zone. Under the hood, we collected a compact but diverse imitation-learning dataset and trained **two policies (ACT and smolVLA2)**. The focus is robust pick-and-place under clutter and lighting variation (day/night + warm/white/blue LED sweeps) in a real hackathon environment.
 
-**Project media (add these to `assets/`):**
-- Setup / arena:  
-  - `assets/IMG_8989.jpg` (full table view)  
-  - `assets/IMG_8987.jpg` (ideal layout)
-- Harder cluttered configurations:  
-  - `assets/IMG_8981.jpg`, `assets/IMG_8984.jpg`, `assets/IMG_8985.jpg`, `assets/IMG_8988.jpg`
-- *Optional:* add a short demo video: `assets/demo.mp4` or `assets/demo.gif`
+**Project media:**
 
-Example embeds:
-
-```md
-![SantaBot arena](assets/IMG_8989.jpg)
+![SantaBot arena - full table view](assets/IMG_8989.jpg)
 
 ![Ideal setup](assets/IMG_8987.jpg)
-
-![Hard configuration](assets/IMG_8985.jpg)
-```
 
 ---
 
@@ -114,21 +102,27 @@ This maps directly to real pick-and-place logistics: **sorting items into bins/z
 
   * "hard" configurations (tight clustering, occlusions, long side up)
 
-*<Image/video of teleoperation or dataset capture>*
+**Datasets on Hugging Face:**
 
-```md
+* Daytime dataset: [versag/santabot_gift_packaging_v3](https://huggingface.co/datasets/versag/santabot_gift_packaging_v3) (160 episodes, 32.3k frames)
+
+* Nighttime dataset: [versag/santabot_gift_packaging_v2](https://huggingface.co/datasets/versag/santabot_gift_packaging_v2) (145 episodes)
+
 ![Arena + objects](assets/IMG_8987.jpg)
 
-![Hard clutter](assets/IMG_8984.jpg)
-```
+![Hard clutter configuration 1](assets/IMG_8984.jpg)
+
+![Hard clutter configuration 2](assets/IMG_8985.jpg)
+
+![Hard clutter configuration 3](assets/IMG_8988.jpg)
 
 #### Training
 
 * Trained **two policies**:
 
-  * **ACT** (behavior cloning baseline)
+  * **ACT** (behavior cloning baseline) - Model: [versag/act_santabot_gift_packaging_v3_10ksteps](https://huggingface.co/versag/act_santabot_gift_packaging_v3_10ksteps)
 
-  * **smolVLA2** (instruction-conditioned policy using the prompts above)
+  * **smolVLA2** (instruction-conditioned policy using the prompts above) - Model: [versag/smolvla_santabot_gift_packaging_v2_10ksteps](https://huggingface.co/versag/smolvla_santabot_gift_packaging_v2_10ksteps)
 
 * Trained separate variants:
 
@@ -144,11 +138,14 @@ This maps directly to real pick-and-place logistics: **sorting items into bins/z
 
 * The policy executes: approach → grasp → move → drop → reset.
 
-*<Image/video of inference eval>*
-
-```md
 ![Inference scene](assets/IMG_8981.jpg)
-```
+
+**Demo video:**
+
+<video width="640" height="480" controls>
+  <source src="assets/IMG_8986.MOV" type="video/quicktime">
+  Your browser does not support the video tag.
+</video>
 
 ---
 
@@ -261,12 +258,16 @@ This submission is intentionally scoped to the **core engineering challenge**:
 In other words: this is a credible step toward a kid-friendly sorting game, and it highlights the practical gap between "works in controlled conditions" and "works reliably in the wild."
 
 ## Additional Links
-*For example, you can provide links to:*
 
-- *Link to a video of your robot performing the task*
-- *URL of your dataset in Hugging Face*
-- *URL of your model in Hugging Face*
-- *Link to a blog post describing your work*
+**Models on Hugging Face:**
+
+- ACT model: [versag/act_santabot_gift_packaging_v3_10ksteps](https://huggingface.co/versag/act_santabot_gift_packaging_v3_10ksteps)
+- smolVLA2 model: [versag/smolvla_santabot_gift_packaging_v2_10ksteps](https://huggingface.co/versag/smolvla_santabot_gift_packaging_v2_10ksteps)
+
+**Datasets on Hugging Face:**
+
+- Daytime dataset: [versag/santabot_gift_packaging_v3](https://huggingface.co/datasets/versag/santabot_gift_packaging_v3)
+- Nighttime dataset: [versag/santabot_gift_packaging_v2](https://huggingface.co/datasets/versag/santabot_gift_packaging_v2)
 
 ## Code submission
 
@@ -313,4 +314,3 @@ outputs/train/smolvla_so101_2cube_30k_steps/wandb/
 
 1. The `latest-run` is the soft link, please make sure to copy the real target directory it linked with all sub dirs and files.
 2. Only provide (upload) the wandb of your last success pre-trained model for the Mission.
-# AMD_Hackthon_2025_team22

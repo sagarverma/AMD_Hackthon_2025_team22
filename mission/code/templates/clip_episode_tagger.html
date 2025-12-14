@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clip Episode Tagger</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .clip-info {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+        }
+
+        .clip-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .btn-primary {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #45a049;
+        }
+
+        .btn-secondary {
+            background: #2196F3;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #0b7dda;
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .video-container {
+            background: #000;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .video-container video {
+            width: 100%;
+            display: block;
+        }
+
+        .controls {
+            margin-bottom: 20px;
+        }
+
+        .time-slider-container {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .time-slider {
+            width: 100%;
+            height: 60px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            position: relative;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+
+        .time-slider-track {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 4px;
+        }
+
+        .time-marker {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: #2196F3;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .time-marker.start {
+            background: #4CAF50;
+        }
+
+        .time-marker.end {
+            background: #f44336;
+        }
+
+        .time-marker-label {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 11px;
+            color: #333;
+            white-space: nowrap;
+        }
+
+        .episode-range {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            background: rgba(33, 150, 243, 0.3);
+            border-left: 2px solid #2196F3;
+            border-right: 2px solid #2196F3;
+            z-index: 5;
+        }
+
+        .episode-range-label {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 10px;
+            font-weight: bold;
+            color: #1976d2;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 2px 4px;
+            border-radius: 2px;
+        }
+
+        .time-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .control-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .time-display {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            min-width: 120px;
+        }
+
+        .color-selector {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+        }
+
+        .color-btn {
+            padding: 8px 16px;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            background: white;
+            transition: all 0.2s;
+        }
+
+        .color-btn:hover {
+            border-color: #2196F3;
+        }
+
+        .color-btn.selected {
+            border-color: #2196F3;
+            background: #e3f2fd;
+            font-weight: bold;
+        }
+
+        .color-btn.red {
+            border-left: 4px solid #f44336;
+        }
+
+        .color-btn.orange {
+            border-left: 4px solid #ff9800;
+        }
+
+        .color-btn.brown {
+            border-left: 4px solid #795548;
+        }
+
+        .color-btn.light-blue {
+            border-left: 4px solid #03a9f4;
+        }
+
+        .color-btn.dark-blue {
+            border-left: 4px solid #1976d2;
+        }
+
+        .episodes-list {
+            margin-top: 20px;
+        }
+
+        .episode-item {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .episode-info {
+            flex: 1;
+        }
+
+        .episode-time {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .episode-color {
+            margin-top: 5px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .episode-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+
+        .btn-danger {
+            background: #f44336;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #d32f2f;
+        }
+
+        .message {
+            padding: 12px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            display: none;
+        }
+
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .message.show {
+            display: block;
+        }
+
+        .current-episode {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+        }
+
+        .current-episode h3 {
+            margin-bottom: 10px;
+            color: #856404;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Clip Episode Tagger</h1>
+        <div id="message" class="message"></div>
+
+        <div class="clip-info">
+            <div class="clip-nav">
+                <div>
+                    <button class="btn btn-secondary" onclick="previousClip()" id="prev-btn">← Previous</button>
+                    <span style="margin: 0 15px; font-weight: bold;" id="clip-counter">-</span>
+                    <button class="btn btn-secondary" onclick="nextClip()" id="next-btn">Next →</button>
+                </div>
+                <button class="btn btn-primary" onclick="saveEpisodes()">Save All Episodes</button>
+            </div>
+            <div id="clip-name" style="margin-top: 10px; font-size: 14px; color: #666;">Loading...</div>
+        </div>
+
+        <div class="video-container">
+            <video id="video-player" controls>
+                Your browser does not support the video tag.
+            </video>
+        </div>
+
+        <div class="controls">
+            <div class="time-slider-container">
+                <div class="time-slider" id="time-slider" onclick="handleSliderClick(event)">
+                    <div class="time-slider-track" id="slider-track"></div>
+                </div>
+                <div class="time-labels">
+                    <span id="time-start-label">0.00s</span>
+                    <span id="time-end-label">0.00s</span>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <span class="time-display" id="current-time">0.00s</span>
+                <button class="btn btn-primary" onclick="clearSelection()">Clear Selection</button>
+            </div>
+
+            <div class="color-selector" style="margin-bottom: 15px;">
+                <button class="color-btn red" onclick="selectColor('red')">Red</button>
+                <button class="color-btn orange" onclick="selectColor('orange')">Orange</button>
+                <button class="color-btn brown" onclick="selectColor('brown')">Brown</button>
+                <button class="color-btn light-blue" onclick="selectColor('light-blue')">Light Blue</button>
+                <button class="color-btn dark-blue" onclick="selectColor('dark-blue')">Dark Blue</button>
+            </div>
+
+            <div class="current-episode" id="current-episode" style="display: none;">
+                <h3>Selected Duration</h3>
+                <div>Start: <span id="current-start">-</span></div>
+                <div>End: <span id="current-end">-</span></div>
+                <div>Duration: <span id="current-duration">-</span></div>
+                <div>Color: <span id="current-color">-</span></div>
+                <button class="btn btn-primary btn-small" onclick="addEpisode()" style="margin-top: 10px;">Add
+                    Episode</button>
+            </div>
+        </div>
+
+        <div class="episodes-list">
+            <h3>Episodes in Current Clip</h3>
+            <div id="episodes-container">
+                <p style="color: #666;">No episodes added yet</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let clips = [];
+        let currentClipIndex = 0;
+        let currentEpisodes = [];
+        let currentStart = null;
+        let currentEnd = null;
+        let currentColor = null;
+        let videoDuration = 0;
+        let isSelecting = false;
+        let selectionStart = null;
+
+        async function loadClips() {
+            try {
+                const response = await fetch('/api/clips');
+                const data = await response.json();
+                clips = data.clips;
+
+                if (clips.length > 0) {
+                    loadClip(0);
+                } else {
+                    showMessage('No clips found', 'error');
+                }
+            } catch (error) {
+                showMessage('Error loading clips: ' + error.message, 'error');
+            }
+        }
+
+        function loadClip(index) {
+            if (index < 0 || index >= clips.length) return;
+
+            currentClipIndex = index;
+            currentEpisodes = [];
+            currentStart = null;
+            currentEnd = null;
+            currentColor = null;
+            selectionStart = null;
+            isSelecting = false;
+            videoDuration = 0;
+
+            const clip = clips[index];
+            const video = document.getElementById('video-player');
+
+            // Pause and reset current video
+            video.pause();
+            video.currentTime = 0;
+
+            // Remove old event listeners by cloning the element
+            const newVideo = video.cloneNode(false); // Don't copy children/attributes
+            newVideo.id = 'video-player';
+            newVideo.controls = true;
+            video.parentNode.replaceChild(newVideo, video);
+
+            // Set new source with cache busting and load
+            newVideo.src = `/api/clip/${clip.name}?t=${Date.now()}`;
+            newVideo.load(); // Force reload
+
+            document.getElementById('clip-name').textContent = `Clip ${index + 1}/${clips.length}: ${clip.name}`;
+            document.getElementById('clip-counter').textContent = `${index + 1} / ${clips.length}`;
+            document.getElementById('prev-btn').disabled = index === 0;
+            document.getElementById('next-btn').disabled = index === clips.length - 1;
+
+            // Wait for video metadata to load
+            const metadataHandler = function () {
+                videoDuration = newVideo.duration;
+                document.getElementById('time-end-label').textContent = videoDuration.toFixed(2) + 's';
+                updateSlider();
+                newVideo.removeEventListener('loadedmetadata', metadataHandler);
+            };
+            newVideo.addEventListener('loadedmetadata', metadataHandler);
+
+            // Update time display
+            newVideo.addEventListener('timeupdate', () => {
+                document.getElementById('current-time').textContent = newVideo.currentTime.toFixed(2) + 's';
+                updateSlider();
+            });
+
+            updateEpisodesList();
+            updateCurrentEpisode();
+            updateSlider();
+        }
+
+        function handleSliderClick(event) {
+            if (videoDuration === 0) return;
+
+            const slider = document.getElementById('time-slider');
+            const rect = slider.getBoundingClientRect();
+            const x = event.clientX - rect.left;
+            const percent = Math.max(0, Math.min(1, x / rect.width));
+            const time = percent * videoDuration;
+
+            const video = document.getElementById('video-player');
+            if (video) {
+                video.currentTime = time;
+            }
+
+            // If no selection, start one; if start exists, set end
+            if (currentStart === null) {
+                currentStart = time;
+                selectionStart = time;
+            } else if (currentEnd === null || time > currentStart) {
+                currentEnd = time;
+            } else {
+                // Reset if clicking before start
+                currentStart = time;
+                currentEnd = null;
+                selectionStart = time;
+            }
+
+            updateSlider();
+            updateCurrentEpisode();
+        }
+
+        function updateSlider() {
+            const slider = document.getElementById('time-slider');
+            const track = document.getElementById('slider-track');
+
+            if (videoDuration === 0) {
+                track.innerHTML = '';
+                return;
+            }
+
+            // Clear existing markers and ranges
+            track.innerHTML = '';
+
+            // Draw existing episodes
+            currentEpisodes.forEach(ep => {
+                const startPercent = (ep.start_time / videoDuration) * 100;
+                const endPercent = (ep.end_time / videoDuration) * 100;
+                const width = endPercent - startPercent;
+
+                const range = document.createElement('div');
+                range.className = 'episode-range';
+                range.style.left = startPercent + '%';
+                range.style.width = width + '%';
+
+                const label = document.createElement('div');
+                label.className = 'episode-range-label';
+                label.textContent = ep.color.replace('-', ' ');
+                range.appendChild(label);
+
+                track.appendChild(range);
+            });
+
+            // Draw current selection
+            if (currentStart !== null) {
+                const startPercent = (currentStart / videoDuration) * 100;
+                const startMarker = document.createElement('div');
+                startMarker.className = 'time-marker start';
+                startMarker.style.left = startPercent + '%';
+                const startLabel = document.createElement('div');
+                startLabel.className = 'time-marker-label';
+                startLabel.textContent = currentStart.toFixed(2) + 's';
+                startMarker.appendChild(startLabel);
+                track.appendChild(startMarker);
+
+                if (currentEnd !== null) {
+                    const endPercent = (currentEnd / videoDuration) * 100;
+                    const endMarker = document.createElement('div');
+                    endMarker.className = 'time-marker end';
+                    endMarker.style.left = endPercent + '%';
+                    const endLabel = document.createElement('div');
+                    endLabel.className = 'time-marker-label';
+                    endLabel.textContent = currentEnd.toFixed(2) + 's';
+                    endMarker.appendChild(endLabel);
+                    track.appendChild(endMarker);
+
+                    // Draw selection range
+                    const width = endPercent - startPercent;
+                    const range = document.createElement('div');
+                    range.className = 'episode-range';
+                    range.style.left = startPercent + '%';
+                    range.style.width = width + '%';
+                    range.style.background = 'rgba(255, 193, 7, 0.4)';
+                    range.style.borderColor = '#ffc107';
+                    track.appendChild(range);
+                }
+            }
+
+            // Draw current play position
+            const video = document.getElementById('video-player');
+            if (video && !video.paused && videoDuration > 0) {
+                const playPercent = (video.currentTime / videoDuration) * 100;
+                const playMarker = document.createElement('div');
+                playMarker.className = 'time-marker';
+                playMarker.style.left = playPercent + '%';
+                playMarker.style.background = '#666';
+                playMarker.style.width = '2px';
+                track.appendChild(playMarker);
+            }
+        }
+
+        function clearSelection() {
+            currentStart = null;
+            currentEnd = null;
+            currentColor = null;
+            selectionStart = null;
+
+            document.querySelectorAll('.color-btn').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+
+            updateSlider();
+            updateCurrentEpisode();
+        }
+
+        function previousClip() {
+            if (currentClipIndex > 0) {
+                loadClip(currentClipIndex - 1);
+            }
+        }
+
+        function nextClip() {
+            if (currentClipIndex < clips.length - 1) {
+                loadClip(currentClipIndex + 1);
+            }
+        }
+
+        function selectColor(color) {
+            currentColor = color;
+
+            // Update button states
+            document.querySelectorAll('.color-btn').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            event.target.classList.add('selected');
+
+            updateCurrentEpisode();
+        }
+
+        function updateCurrentEpisode() {
+            const container = document.getElementById('current-episode');
+
+            if (currentStart !== null && currentEnd !== null) {
+                container.style.display = 'block';
+                document.getElementById('current-start').textContent = currentStart.toFixed(2) + 's';
+                document.getElementById('current-end').textContent = currentEnd.toFixed(2) + 's';
+                const duration = currentEnd - currentStart;
+                document.getElementById('current-duration').textContent = duration.toFixed(2) + 's';
+                document.getElementById('current-color').textContent = currentColor || 'Not selected';
+            } else {
+                container.style.display = 'none';
+            }
+        }
+
+        function addEpisode() {
+            if (currentStart === null || currentEnd === null || !currentColor) {
+                showMessage('Please mark start, end, and select a color', 'error');
+                return;
+            }
+
+            if (currentEnd <= currentStart) {
+                showMessage('End time must be after start time', 'error');
+                return;
+            }
+
+            currentEpisodes.push({
+                start_time: currentStart,
+                end_time: currentEnd,
+                color: currentColor,
+            });
+
+            // Reset for next episode
+            clearSelection();
+
+            updateEpisodesList();
+            updateCurrentEpisode();
+        }
+
+        function removeEpisode(index) {
+            currentEpisodes.splice(index, 1);
+            updateEpisodesList();
+        }
+
+        function updateEpisodesList() {
+            const container = document.getElementById('episodes-container');
+
+            if (currentEpisodes.length === 0) {
+                container.innerHTML = '<p style="color: #666;">No episodes added yet</p>';
+                return;
+            }
+
+            let html = '';
+            currentEpisodes.forEach((ep, idx) => {
+                const duration = (ep.end_time - ep.start_time).toFixed(2);
+                html += `
+                    <div class="episode-item">
+                        <div class="episode-info">
+                            <div class="episode-time">${ep.start_time.toFixed(2)}s - ${ep.end_time.toFixed(2)}s (${duration}s)</div>
+                            <div class="episode-color">Color: ${ep.color.replace('-', ' ')}</div>
+                        </div>
+                        <div class="episode-actions">
+                            <button class="btn btn-danger btn-small" onclick="removeEpisode(${idx})">Remove</button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        async function saveEpisodes() {
+            if (currentEpisodes.length === 0) {
+                showMessage('No episodes to save', 'error');
+                return;
+            }
+
+            // Get current clip name
+            const currentClip = clips[currentClipIndex];
+            const clipName = currentClip ? currentClip.name : '';
+
+            try {
+                const response = await fetch('/api/save', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        episodes: currentEpisodes,
+                        clip_name: clipName
+                    }),
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    showMessage(`Saved ${data.episodes_saved} episodes to ${data.output_file}`, 'success');
+                    // Clear current episodes after saving
+                    currentEpisodes = [];
+                    updateEpisodesList();
+                } else {
+                    showMessage('Error saving episodes: ' + (data.error || 'Unknown error'), 'error');
+                }
+            } catch (error) {
+                showMessage('Error saving episodes: ' + error.message, 'error');
+            }
+        }
+
+        function showMessage(text, type) {
+            const messageEl = document.getElementById('message');
+            messageEl.textContent = text;
+            messageEl.className = `message ${type} show`;
+            setTimeout(() => {
+                messageEl.classList.remove('show');
+            }, 5000);
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+
+            if (e.key === 'c' || e.key === 'C') {
+                clearSelection();
+            } else if (e.key === 'a' || e.key === 'A') {
+                addEpisode();
+            } else if (e.key === 'ArrowLeft' && e.ctrlKey) {
+                previousClip();
+            } else if (e.key === 'ArrowRight' && e.ctrlKey) {
+                nextClip();
+            } else if (e.key >= '1' && e.key <= '5') {
+                const colors = ['red', 'orange', 'brown', 'light-blue', 'dark-blue'];
+                selectColor(colors[parseInt(e.key) - 1]);
+            }
+        });
+
+        // Load clips on page load
+        loadClips();
+    </script>
+</body>
+
+</html>
